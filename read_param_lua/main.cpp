@@ -18,15 +18,15 @@ void ReadFileWithLua::read(){
     exit(1);
   }
 
-	// Read from lua file
-	mystring  = std::string(read_string2("mystring", &status, true));
-	myint     = read_int("myint");
-	mydouble  = read_double("mydouble");
+  // Read from lua file
+  mystring  = std::string(read_string2("mystring", &status, true));
+  myint     = read_int("myint");
+  mydouble  = read_double("mydouble");
 
-	// Output the data read from the lua file
-	std::cout << "String : " << mystring << std::endl;
-	std::cout << "Int    : " << myint    << std::endl;
-	std::cout << "Double : " << mydouble << std::endl;
+  // Output the data read from the lua file
+  std::cout << "String : " << mystring << std::endl;
+  std::cout << "Int    : " << myint    << std::endl;
+  std::cout << "Double : " << mydouble << std::endl;
 }
 
 /////////////////////////////////////////
@@ -34,15 +34,15 @@ void ReadFileWithLua::read(){
 /////////////////////////////////////////
 
 int main(int argv, char **argc){
-	ReadFileWithLua paramfile;
+  ReadFileWithLua paramfile;
 
   if(argv == 1) exit(1);
 
-	// Open and read parameters
-	paramfile.open(argc[1]);
-	paramfile.read();
-	paramfile.close();
+  // Open and read parameters
+  paramfile.open(argc[1]);
+  paramfile.read();
+  paramfile.close();
 
-	return 0;
+  return 0;
 }
 
