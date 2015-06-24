@@ -1,3 +1,6 @@
+#ifndef ODESOLVER_INC
+#define ODESOLVER_INC
+
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
@@ -349,4 +352,4 @@ class OdeSolver{
       return (inow <= n-1);
     }
 };
-
+#endif

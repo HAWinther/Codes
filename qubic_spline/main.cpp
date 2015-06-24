@@ -8,8 +8,8 @@
 
 void make_spline(){
   Spline func;
-  double *x, *y;
-  double xmin, xmax, xnow;
+  realT *x, *y;
+  realT xmin, xmax, xnow;
   int n;
 
   std::cout << "==================" << std::endl;
@@ -20,15 +20,15 @@ void make_spline(){
   n = 25;
 
   // Initialize arrays 
-  x = new double[n];
-  y = new double[n];
+  x = new realT[n];
+  y = new realT[n];
 
   xmin = -10.0;
   xmax =  10.0;
 
   // Make y[i] = x[i]^2 for x[i] in [-10,10]
   for(int i=0;i<n;i++){
-    x[i] = xmin + (xmax-xmin)*i/double(n-1);
+    x[i] = xmin + (xmax-xmin)*i/realT(n-1);
     y[i] = x[i]*x[i];
   }
 
@@ -37,7 +37,7 @@ void make_spline(){
 
   // Test to see how accurate the spline is
   for(int i=0;i<n-1;i++){
-    xnow = xmin + (xmax-xmin)*(i+0.5)/double(n-1);
+    xnow = xmin + (xmax-xmin)*(i+0.5)/realT(n-1);
     std::cout << " x: " << std::setw(12) << xnow << " y: " << std::setw(12) << func.get_spline(xnow);
     std::cout << " delta_y: " << std::setw(12) << func.get_spline(xnow) - xnow*xnow << std::endl;
   }

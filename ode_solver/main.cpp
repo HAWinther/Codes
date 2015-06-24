@@ -1,8 +1,6 @@
 #include <iomanip>
 #include "ode_solver.h"
 
-using namespace std;
-
 ///////////////////////////////////////
 // The ODE dy/dx = -2xy
 // ===> y[x] = y[0] * Exp[-x^2]
@@ -64,8 +62,8 @@ void solve_ode1(){
 
   // Print data
   for(int i=0;i<n;i++){
-    std::cout << setw(2) << i << " / " << n << "  x: " << setw(12) << x[i];
-    std::cout << "  y: " <<  setw(12) << y[i] << " delta_y: " <<  setw(12) << y[i] - exp(-x[i]*x[i]) << std::endl; 
+    std::cout << std::setw(2) << i << " / " << n << "  x: " << std::setw(12) << x[i];
+    std::cout << "  y: " << std::setw(12) << y[i] << " delta_y: " <<  std::setw(12) << y[i] - exp(-x[i]*x[i]) << std::endl; 
   }
 
   delete[] ic;
@@ -114,15 +112,15 @@ void solve_ode2(){
 
   // Print data
   for(int i=0;i<n;i++){
-    std::cout <<  setw(2) << i+1 << " / " << n << "  x: " <<  setw(12) <<x[i];
-    std::cout << "  y1: " <<  setw(12) << y1[i] << " delta_y1: " <<  setw(12) << y1[i] - 1.0 - x[i] - x[i]*x[i]/2.0;
-    std::cout << "  y2: " <<  setw(12) << y2[i] << " delta_y2: " <<  setw(12) << y2[i] - 1.0 - x[i] << std::endl; 
+    std::cout <<  std::setw(2) << i+1 << " / " << n << "  x: " <<  std::setw(12) <<x[i];
+    std::cout << "  y1: " <<  std::setw(12) << y1[i] << " delta_y1: " <<  std::setw(12) << y1[i] - 1.0 - x[i] - x[i]*x[i]/2.0;
+    std::cout << "  y2: " <<  std::setw(12) << y2[i] << " delta_y2: " <<  std::setw(12) << y2[i] - 1.0 - x[i] << std::endl; 
   }
 
   delete[] ic;
 }
 
-int main(){
+int main(int argv, char **argc){
   solve_ode1();
   solve_ode2();
 }

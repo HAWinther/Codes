@@ -13,7 +13,7 @@ typedef long double realT;
 #elif defined(FLOAT)
 typedef float realT;
 #else
-typedef float realT;
+typedef double realT;
 #endif
 
 //=======================================================

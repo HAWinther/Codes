@@ -1,0 +1,11 @@
+===============================================
+Code to make Qubic Splines
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Define the data-type realT (double,float,...) in the Makefile
+
+* All solve methods are contained in the header-file spline.h 
+
+* See main.cpp for examples of how to use it. 
+
