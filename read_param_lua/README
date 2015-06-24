@@ -1,0 +1,11 @@
+===============================================
+Code to make proper input files using LUA
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Requies LUA library (lua-5.2.3 or similar). Set up paths in Makefile.
+
+* All methods are contained in the header-file read_lua.h. Only need to implement the read() function.
+
+* See main.cpp for examples of how to use it. Run test as ./readluafile input.lua
+

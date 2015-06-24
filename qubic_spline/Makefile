@@ -3,6 +3,9 @@ SHELL := /bin/bash
 # Define the type
 type=DOUBLE
 
+# Set compiler
+# CC = g++-mp-4.8
+
 C = -O3 $(OPTIONS) -D$(type)
 
 TARGETS := qubicspline
@@ -18,10 +21,10 @@ main.o		: main.cpp spline.h
 HEADERS = spline.h
 
 qubicspline: $(OBJS)
-	g++-mp-4.8 -o $@ $^ $C $I $L
+	${CC} -o $@ $^ $C $I $L
 
 %.o: %.cpp $(HEADERS)
-	g++-mp-4.8  -c -o $@ $< $C $I $L
+	${CC}  -c -o $@ $< $C $I $L
 
 clean:
 	rm -rf $(TARGETS) *.o
