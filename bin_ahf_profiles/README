@@ -1,0 +1,23 @@
+===============================================
+Code to bin all the profiles from AHF output
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Define the data-type realT (double,float,...) in the Makefile
+
+* Requies the LUA (5.x) library (just to read the input file). Set up paths in Makefile.
+
+* Edit input.lua and run as ./calc_halo_profiles input.lua
+
+* The number of profiles and the desired mass-ranges to bin over are defined in the input-file.
+
+* The output format is  [r/rvir type3 sigma_type2 type3 sigma_type3 ...]
+  where type[i] is the same as in the AHF_profile file:
+
+  npart(2)  M_in_r(3) ovdens(4) dens(5) vcirc(6)
+  vesc(7) sigv(8) Lx(9) Ly(10)  Lz(11)  b(12) c(13) Eax(14)
+  Eay(15) Eaz(16) Ebx(17) Eby(18) Ebz(19) Ecx(20) Ecy(21)
+  Ecz(22) Ekin(23)  Epot(24)
+
+* The sigma value is the standard error (error of the mean).
+
