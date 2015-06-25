@@ -1,0 +1,9 @@
+===============================================
+Code to read GADGET1 files
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* All solve methods are contained in the header-file read_gadget.h
+
+* See main.cpp for examples of how to use it.
+
