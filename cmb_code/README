@@ -1,0 +1,91 @@
+===============================================
+CMFuckingB - a simple Boltzmann code to compute
+the CMB spectrum for scalar perturbations in
+the Newtonian Gauge for LCDM.
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* NB: Never used for anything useful so probably full of bugs.
+
+* Require the complex bessel library [ https://github.com/valandil/complex_bessel special ]. Compile and run as ./CMFB_MODEL
+
+* All background cosmology related content is in 'Background'
+
+* The model specific functions are implemented in 'BackgroundMODEL'
+
+* All recombination history (evolution of tau, n_e, etc.) related content is in 'Recombination'
+
+* The (physics of recombination) model specific functions are implemented in 'RecombinationMODEL'. If the 
+model does not alter the standard recomb. equations (apart from the specific form of H(a) etc.) then
+one can use the STANDARD version. 
+   * Require objects: 'Background'
+
+* All perturbations related content is in 'Perturbations'.
+The specific perturbation functions for a model is in 'PerturbationsMODEL'.
+   * Require objects: 'Background', 'Recombination'
+
+* All power-spectrum related methods [ to calc. C_l (TT,TE,EE), P(k) etc. ] are in 'Powerspectrum'.
+   * Require objects: 'Background', 'Recombination', 'Perturbations'
+
+#################################################################
+#                 Implementation of new model
+#################################################################
+
+Change MODEL=MYMODEL in makefile.
+
+Make directory source_model_MYMODEL
+
+* Implement source_model_MYMODEL/BackgroundMYMODEL.cpp and .h
+
+* Implement source_model_MYMODEL/PerturbationsMYMODEL.cpp and .h
+
+* Implement source_model_MYMODEL/driver_MYMODEL.cpp
+
+* Modify Parameter.h to read model parameters in.
+
+If for example the background in the same as LCDM then just change
+Background$(MODEL) to BackgroundLCDM in the makefile and the MODEL files
+to use the LCDM version etc.
+
+#################################################################
+#                    Objects and Methods 
+#################################################################
+
+*  Variables: x = log(a) and k is [k/H0]
+
+* 'Background' is an abstract class for a general background
+  which contains virtual functions which need to be implemented
+  by the specific cosmological model.
+
+  'BackgroundMODEL' is a specific class for a given cosmological
+  model. It is derived from 'Background'.
+
+* 'Recombination' in an abstract class for a solving for a general 
+  recombination history.
+
+  'RecombinationSTANDARD' is the standard (particle physics model) 
+  of recombination. It is derived from 'Recombination'
+
+* 'Pertubrations' is an abstract class for general perturbations
+  equations.
+
+  'PerturbationsMODEL' derives from 'Pertubrations' and implements
+  the pert. eq. for the specific model.
+
+* 'Powerspectrum' is a general class for computing power-spectra
+  C_l (TT,TE,EE) and P(k)
+
+* 'Matrix.h' is the vector / matrix class used in the code.
+  Contains methods to do stuff with arrays / matrises.
+
+* 'Odeint.h' contains methods for solving ODE's. Standard stepper
+  needs the Jacobi matrix to solve (much faster). This requires LU
+  decomposition. Option to use a standard algorithm or LAPACK which
+  should be faster.
+
+* 'LUdcmp.h' contains methods to do LU decomposition needed
+  by the ODE solver when using the Jacobi matrix. Only needed
+  when USELAPACK is not defined.
+
+* 'Spline.h' contains methods for making (qubic) splines.
+

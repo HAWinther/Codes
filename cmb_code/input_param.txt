@@ -1,0 +1,71 @@
+2
+0.222
+0.0449
+0.7331
+0.71
+3.04
+11.0
+0.5
+0.964
+1.29409e-09
+0.801
+5775.11
+2.725
+0.24
+output/lcdm_
+0
+output/lcdm_precomputed_phi.dat
+output/lcdm_precomputed_source.dat
+1
+output/lcdm_precomputed_bessel.dat
+
+######################################################################
+######################## The values are: #############################
+######################################################################
+
+norm_cl		0 : Normalize according to first peak of WMAP 7 best fit 
+		1 : Normalize using supplied sigma8 value
+		2 : Normalize using supplied A_s value
+
+Omega_m		Dark matter density
+
+Omega_b		Baryon density
+
+Omega_lambda
+
+h		H0 /(100 km/s 1/Mpc)
+
+n_eff_nu	Effective number of rel. neutrino species
+
+z_reion		Redshift of reionization (< 0.0 means no reionization)
+
+dz_reion	Redshift range for which reionization completes
+
+n_s		Scalar spectral index
+
+A_s		Amplitude of primordial power-spectrum.
+	Set A_s = 0.0 if norm_cl != 3
+
+sigma8		RMS fluctuations on scale 8 Mpc/h.
+	Set sigma8 = 0.0 if norm_cl != 2
+	first_peak	[C_l l(l+1)/2pi T_0^2] at first peak in muK^2
+
+T_0		Temperature of CMB today
+
+Y_p		Primordial Helium abundance
+
+Output dir and prefix
+
+Use precomputed perturbations if they exist [1 = Yes, 0 = No] 
+This is mainly for testing of the routines that comes after computing perturbations
+
+Filename for precomputed Phi
+Filename for precomputed source
+
+Use precomputed besselfunction-values if they exist [1 = Yes, 0 = No] 
+
+Filename for precomuted besselfunction-values
+
+######################################################################
+######################################################################
+######################################################################
