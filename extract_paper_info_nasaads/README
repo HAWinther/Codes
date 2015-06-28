@@ -1,0 +1,14 @@
+===============================================
+Python code to extract data from a NASA ADS
+personal library
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Get a list of all papers with title, authors, abstract and citations. 
+
+* Get bibtex of any paper given a bibcode.
+
+* Extract info about all the papers that cite your papers. 
+
+* Outputs HTML with a lot of information.
+
