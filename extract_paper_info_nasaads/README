@@ -6,7 +6,7 @@ Hans A. Winther (2015) (hans.a.winther@gmail.com)
 
 * Get a list of all papers with title, authors, abstract and citations. 
 
-* Get bibtex of any paper given a bibcode.
+* Get bibtex of any paper(s) given bibcode(s).
 
 * Extract info about all the papers that cite your papers. 
 
