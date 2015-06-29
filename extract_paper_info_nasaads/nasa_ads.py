@@ -1,10 +1,10 @@
-############################################################################################
+##############################################################################
 # Hans A. Winther (2015) (hans.a.winther@gmail.com)
-############################################################################################
+##############################################################################
 
 import requests
 import xml.etree.ElementTree as ET
-import lxml.etree, os, urlparse
+import lxml.etree
 import time
 import sys
 import os.path
@@ -19,12 +19,18 @@ class Paper:
     self.title = ""
     self.authors = []
     self.abstract = ""
-    self.cites = 0 # Official cite number. We might have more cites in the cites_papers list
+    self.cites = 0
     self.cites_papers = []
 
-def write_library_to_file(papers, filename):
+def write_library_to_file(papers, filename, verbose):
+  if(verbose):
+    print ''
+    print '==================================================='
+    print 'Writing library to file: ', filename
+    print '==================================================='
+
   data = str(len(papers)) + "\n"
-  data += "=================================\n"
+  data   += "=================================\n"
   for paper in papers:
     data += paper.bibcode + "\n"
     data += paper.title + "\n"
@@ -38,15 +44,21 @@ def write_library_to_file(papers, filename):
     f.write(data)
 
 ##############################################################################
-# Check for new papers/citations. Read an old library-file and compare with current one.
+# Check for new papers/cites. Read old library-file and compare with current
 ##############################################################################
 
-def check_for_new_citations(papers,filename):
+def check_for_new_citations(papers, filename, verbose):
+  if(verbose):
+    print ''
+    print '==================================================='
+    print 'Check for new papers/citations                     '
+    print '==================================================='
+
   oldpapers = []
   html = ""
 
   if(os.path.exists(filename) == False):
-    print 'There is no old library file (',filename,' no not exists)'
+    if(verbose): print 'There is no old library file (',filename,' no not exists)'
     return html
 
   # Read old library file and make old library
@@ -70,11 +82,7 @@ def check_for_new_citations(papers,filename):
   # Compare old and new library
   newpapers = len(papers) - len(oldpapers)
   newcites = 0
-  print ''
-  print '==================================================='
-  print 'Compare old library with current one               '
-  print '==================================================='
-  print "We have",newpapers,"new papers"
+  if(verbose): print 'Comparing old library with current one. We have',newpapers,'new papers'
 
   if(newpapers>0):
     html += "<p>\n"
@@ -89,8 +97,9 @@ def check_for_new_citations(papers,filename):
     match = [oldp for oldp in oldpapers if oldp.bibcode == newp.bibcode]
     if(len(match)==0):
       # Paper is not in oldpapers
-      print "We found a new paper:", newp.bibcode, "that is not in the old library"
-      print "This paper has",newp.cites,"citations"
+      if(verbose):
+        print "We found a new paper:", newp.bibcode, "that is not in the old library"
+        print "This paper has",newp.cites,"citations"
       newcites += newp.cites
       for p in newp.cites_papers:
         newcitebibcode.append(p.bibcode)
@@ -98,7 +107,7 @@ def check_for_new_citations(papers,filename):
       # Paper is in oldpapers. Check if citations has changed
       oldp = match[0]
       if(newp.cites > oldp.cites):
-        print "Paper",newp.bibcode,"have",newp.cites-oldp.cites,"new citations!"
+        if(verbose): print "Paper",newp.bibcode,"have",newp.cites-oldp.cites,"new citations!"
         newcites += newp.cites-oldp.cites
 
         # Get bibcodes of the new citations
@@ -147,9 +156,9 @@ def generate_bib_url(bibcode):
 # Output: XML code from NASA ADS
 ##############################################################################
 
-def nasa_ads_query(bibcodes):
+def nasa_ads_query(bibcodes, verbose):
   url = "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect"
-  print '* Performing Nasa ADS Query. Bibcodes = ', bibcodes
+  if(verbose): print '* Performing Nasa ADS Query. Bibcodes = ', bibcodes
 
   # Data to be submitted via the ADS form
   form_data = {
@@ -166,15 +175,15 @@ def nasa_ads_query(bibcodes):
 ##############################################################################
 # Get the HTML from a NASA ADS page and extract bibcodes
 # Input: String with URL to library
-# Output: String of bibcodes in format code1;code2;...;codeN
+# Output: List of bibcodes
 ##############################################################################
 
-def extract_bibcodes_from_ads_page(url):
-  print ''
-  print '==================================================='
-  print 'Extract bibcodes from                              '
-  print url
-  print '==================================================='
+def extract_bibcodes_from_ads_page(url, verbose):
+  if(verbose):
+    print ''
+    print '==================================================='
+    print 'Extract bibcodes from', url
+    print '==================================================='
   bibcodes = []
   response = requests.get(url)
   html = response.text.encode('utf-8').strip()
@@ -185,8 +194,9 @@ def extract_bibcodes_from_ads_page(url):
     inpvalue = inp.get("value", None)
     if(inptype=="checkbox" and inpname=="bibcode"):
       bibcodes.append(inpvalue)
-  print "Bibcodes = ", ";".join(bibcodes).strip()
-  print '==================================================='
+  if(verbose):
+    print "Bibcodes = ", ";".join(bibcodes).strip()
+    print '==================================================='
   return bibcodes
 
 ##############################################################################
@@ -195,7 +205,7 @@ def extract_bibcodes_from_ads_page(url):
 # Input: a (empty) list 'papers' and a list of bibcodes
 ##############################################################################
 
-def add_bibcodes_to_library(papers, bibcodes,verbose):
+def add_bibcodes_to_library(papers, bibcodes, verbose):
   ns = {'ref': 'http://ads.harvard.edu/schema/abs/1.1/abstracts'}
   if(verbose):
     print ''
@@ -204,7 +214,7 @@ def add_bibcodes_to_library(papers, bibcodes,verbose):
     print '==================================================='
 
   # Make query of bibcodes to NASA ADS
-  xmlcode = nasa_ads_query(bibcodes)
+  xmlcode = nasa_ads_query(bibcodes, verbose)
   root = ET.fromstring(xmlcode)
   allrecords = root.findall('ref:record',ns)
   nrecords = len(allrecords)
@@ -242,13 +252,14 @@ def add_bibcodes_to_library(papers, bibcodes,verbose):
 # Output: bibcode(s) of all papers citing paper A
 ##############################################################################
 
-def get_bibcode_of_cites(bibcode):
+def get_bibcode_of_cites(bibcode, verbose):
   citeurl = generate_url(bibcode, "CITATIONS")
-  print ''
-  print '==================================================='
-  print 'Get bibcodes of papers that cite', bibcode
-  print '==================================================='
-  print "Url = ", citeurl
+  if(verbose):
+    print ''
+    print '==================================================='
+    print 'Get bibcodes of papers that cite', bibcode
+    print '==================================================='
+    print "Url = ", citeurl
   bibcodes = []
   response = requests.get(citeurl)
   html = response.text.encode('utf-8').strip()
@@ -312,11 +323,12 @@ def extract_bibtex(bibcode):
 # Output: write filename to file and returns a string with the HTML code
 ##############################################################################
 
-def write_papers_as_html(papers,newcites,filename):
-  print ''
-  print '==================================================='
-  print 'Write information about library in HTML            '
-  print '==================================================='
+def write_papers_as_html(papers, newcites, filename, verbose):
+  if(verbose):
+    print ''
+    print '==================================================='
+    print 'Write information about library in HTML            '
+    print '==================================================='
 
   # Use MathJax to process math in HTML?
   useMathJax = True
@@ -347,7 +359,7 @@ def write_papers_as_html(papers,newcites,filename):
   html += "</p>\n"
   html += "<hr>\n"
 
-  html += "<h2>New papers and citations:</h2>"
+  html += "<h2>New papers and citations:</h2>\n"
   if(newcites != ""):
     html += newcites
   else:
@@ -388,7 +400,9 @@ def write_papers_as_html(papers,newcites,filename):
   html += "</body>\n</html>"
   html = html.encode('ascii', 'xmlcharrefreplace')
 
-  print "Write output to : ", filename
+  if(verbose):
+    print "Write output to : ", filename
+
   with open(filename,"w") as f:
     f.write( html )
   return html
@@ -396,53 +410,66 @@ def write_papers_as_html(papers,newcites,filename):
 ##############################################################################
 # Construct a library given a NASA ADS personal library. This gathers
 # information about all the papers in the library and about the papers that cite it
-# If one does not have a personal library one can replace bibcodes = ...
+#
+# If one do not have a personal library one can replace bibcodes = ...
 # by bibcodes = "bibcode1;bibcode2;...;bibcodeN" where bibcodei are valid
 # NASA ADS bibcodes
 ##############################################################################
 
-def construct_library(libraryurl):
+def construct_library(url, verbose):
   mylibrary = []
-  bibcodes = ";".join( extract_bibcodes_from_ads_page(libraryurl) ).strip()
+  bibcodes = ";".join( extract_bibcodes_from_ads_page(url, verbose) ).strip()
   
+  # Extract all information about papers that cite us or just get bibcode?
+  doquerypapersthatciteus = False
+
   # Add all bibcodes found above to 'papers' and make query to NASA ADS to get relevant info
-  add_bibcodes_to_library(mylibrary, bibcodes, True)
+  add_bibcodes_to_library(mylibrary, bibcodes, verbose)
 
   # Get bibcodes of all papers that cite our papers
-  doquerypapersthatciteus = False
   for paper in mylibrary:
     bibcode = paper.bibcode
 
     if(doquerypapersthatciteus):
       # Get all info about the papers that cite us
-      bibcodes = ";".join(get_bibcode_of_cites(bibcode)).strip()
-      add_bibcodes_to_library(paper.cites_papers, bibcodes, False)
+      bibcodes = ";".join(get_bibcode_of_cites(bibcode, verbose)).strip()
+      add_bibcodes_to_library(paper.cites_papers, bibcodes, verbose)
     else:
       # Only store bibcode-data of papers that cite us in library
-      for b in get_bibcode_of_cites(bibcode):
+      for b in get_bibcode_of_cites(bibcode, verbose):
         p = Paper()
         p.bibcode = b
         paper.cites_papers.append(p)
   return mylibrary
 
-
 ##############################################################################
 ##############################################################################
 ##############################################################################
 ##############################################################################
 
-# Extract bibcodes from a personal NASA ADS library page
-libraryurl = "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?library&libname=My+Papers&libid=5202f87fce"
-mylibrary = construct_library(libraryurl)
+# Filename to store the library in
+libfilename = "library.txt"
+
+# Outputfile
+outputhtml = "sample_output.html"
+
+# URL to your personal NASA ADS library
+liburl = "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?library&libname=My+Papers&libid=5202f87fce"
+
+# Verbose?
+verbose = True
+
+# Construct our library
+mylibrary = construct_library(liburl, verbose)
 
 # Check if we have new papers/citations
-newcites = check_for_new_citations(mylibrary,"library.txt")
+newcites = check_for_new_citations(mylibrary, libfilename, verbose)
 
-# Store the library
-write_library_to_file(mylibrary, "library.txt")
+# Write the library to file
+write_library_to_file(mylibrary, libfilename, verbose)
 
-# Output HTML code of all papers in your library
-write_papers_as_html(mylibrary, newcites, "sample_output.html")
+# Output HTML page with info about all the papers in your library
+write_papers_as_html(mylibrary, newcites, outputhtml, verbose)
 
 ##############################################################################
 ##############################################################################
