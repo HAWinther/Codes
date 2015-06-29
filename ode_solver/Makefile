@@ -1,10 +1,14 @@
-SHELL := /bin/bash
+#####################################################
+# Hans A. Winther (2015) (hans.a.winther@gmail.com)
+#####################################################
 
-# Define the type
-type=DOUBLE
+SHELL := /bin/bash
 
 # Set compiler
 # CC = g++-mp-4.8
+
+# Define the type
+type=DOUBLE
 
 C = -O3 $(OPTIONS) -D$(type)
 

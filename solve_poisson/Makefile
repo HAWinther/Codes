@@ -1,10 +1,14 @@
-SHELL := /bin/bash
+#####################################################
+# Hans A. Winther (2015) (hans.a.winther@gmail.com)
+#####################################################
 
-# Set the type
-type=DOUBLE
+SHELL := /bin/bash
 
 # Set compiler
 # CC = g++-mp-4.8
+
+# Set the type
+type=DOUBLE
 
 # Includes for FFTW3
 L = -L/Users/winther/local/lib
