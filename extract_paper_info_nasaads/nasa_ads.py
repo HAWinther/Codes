@@ -8,7 +8,6 @@ import lxml.etree
 import time
 import sys
 import os.path
-
 import urllib2
 
 ##############################################################################
@@ -21,32 +20,9 @@ class Paper:
     self.title = ""
     self.authors = []
     self.abstract = ""
+    self.journal = ""
     self.cites = 0
     self.cites_papers = []
-
-########################################
-# Test of google scholar requests
-########################################
-
-def get_google_papers(url):
-  req = urllib2.Request(url)
-  response = urllib2.urlopen(req)
-  html = response.read()
-  #Requests do not work on google for some reason!
-  #response = requests.get(url)
-  #html = response.text.encode('utf-8').strip()
-  root = lxml.etree.HTML(html)
-  print html
-  print '==========================='
-  for inp in root.iter("td"):
-    inpclass = inp.get("class", None)
-    if(inpclass=="gsc_a_t"):
-      for iinp in inp.iter("a"):
-        print iinp.get("href",None) 
-
-#url = "https://scholar.google.com/citations?user=oDCHqpAAAAAJ&hl=no"
-#get_google_papers(url)
-#sys.exit(0)
 
 ##############################################################################
 # Write information about a library to file (for now we do not include
@@ -180,7 +156,7 @@ def generate_bib_url(bibcode):
   return url
 
 ##############################################################################
-# Make a query to the NASA ADS database 
+# Make a query to the NASA ADS database
 # Input: string of bibcodes in the format code1;code2;...;codeN
 # Output: XML code from NASA ADS
 ##############################################################################
@@ -232,7 +208,7 @@ def extract_bibcodes_from_ads_page(url, verbose):
   return bibcodes
 
 ##############################################################################
-# Goes through all bibcodes and extracts information about the paper and 
+# Goes through all bibcodes and extracts information about the paper and
 # stores it in our library
 # Input: a (empty) list 'papers' and a list of bibcodes
 ##############################################################################
@@ -275,9 +251,11 @@ def add_bibcodes_to_library(papers, bibcodes, verbose):
     papers.append(p)
     if(verbose): print '  * Adding paper: \"',p.title,"\" Cites: ", p.cites
 
-  if(verbose):
-    print 'Total cites: ', totcites
-    print 'Cites per paper: ', totcites/float(nrecords)
+  # Verbose
+  print ''
+  print 'Number of papers NASA ADS =', nrecords
+  print 'Total cites NASA ADS      = ', totcites
+  print 'Cites per paper NASA ADS  = ', totcites/float(nrecords)
 
 ##############################################################################
 # From a given bibcode extract the bibcodes of all the papers citing that paper
@@ -310,7 +288,7 @@ def get_bibcode_of_cites(bibcode, verbose):
 ##############################################################################
 # Make a list of all collaborators we have based on all our papers
 # Input:  A library of papers
-# Output: A list of authors sorted by name 
+# Output: A list of authors sorted by name
 ##############################################################################
 
 def get_collaborators(papers):
@@ -366,7 +344,7 @@ def extract_bibtex(bibcode):
   return bibtex
 
 ##############################################################################
-# Make HTML from a list of papers 
+# Make HTML from a list of papers
 # Input: a list of papers and the filename of the output
 # Output: write filename to file and returns a string with the HTML code
 ##############################################################################
@@ -401,11 +379,11 @@ def write_papers_as_html(papers, newcites, filename, verbose):
 
   # Write HTML
   html  = "<html>\n<head>\n"
-  html += "<title>"+author+"'s Papers</title>\n"
+  html += "  <title>"+author+"'s Papers</title>\n"
 
   # Add MathJax Header
   if(useMathJax):
-    html += "<script type=\"text/x-mathjax-config\">\n MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\\\(','\\\\)']]}});\n </script>\n <script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n"
+    html += "  <script type=\"text/x-mathjax-config\">\n MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\\\(','\\\\)']]}});\n  </script>\n  <script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n"
   html += "</head>\n<body>\n"
 
   # Add introduction with some useful metrics
@@ -452,10 +430,10 @@ def write_papers_as_html(papers, newcites, filename, verbose):
     pubinfo = extract_publication_info(p.bibcode)
     html   += "  <p>\n    <b>Published in: </b>"
     if(pubinfo[1] != None):
-      html += "    <a href=\"http://dx.doi.org/"+pubinfo[1]+"\">"+pubinfo[0]+"</a> | "
+      html += "<a href=\"http://dx.doi.org/"+pubinfo[1]+"\">"+pubinfo[0]+"</a> | "
     if(pubinfo[2] != None):
-      html += "    <a href=\"http://arxiv.org/abs/"+pubinfo[2]+"\">eprint arXiv:"+pubinfo[2]+"</a> | "
-    html   += "    <a href=\""+generate_url(p.bibcode,"ABSTRACT")+"\">Nasa ADS Abstract</a>\n"
+      html += "<a href=\"http://arxiv.org/abs/"+pubinfo[2]+"\">eprint arXiv:"+pubinfo[2]+"</a> | "
+    html   += "<a href=\""+generate_url(p.bibcode,"ABSTRACT")+"\">Nasa ADS Abstract</a>\n"
     html   += "  </p>\n"
 
     # Add links to paper that cite us
@@ -492,7 +470,7 @@ def write_papers_as_html(papers, newcites, filename, verbose):
 def construct_library(url, verbose):
   mylibrary = []
   bibcodes = ";".join( extract_bibcodes_from_ads_page(url, verbose) ).strip()
-  
+
   # Extract all information about papers that cite us or just get bibcode?
   doquerypapersthatciteus = False
 
@@ -514,6 +492,90 @@ def construct_library(url, verbose):
         p.bibcode = b
         paper.cites_papers.append(p)
   return mylibrary
+
+########################################
+# Make Google Scholar requests. Works well,
+# but as done now we only fetch the first 100 papers
+########################################
+
+def is_number(s):
+  try:
+    int(s)
+    return True
+  except ValueError:
+    return False
+
+def make_google_library(papers,username):
+  url = "https://scholar.google.com/citations?user="+username
+  req = urllib2.Request(url)
+  response = urllib2.urlopen(req)
+  html = response.read()
+  root = lxml.etree.HTML(html)
+
+  # Extract data from HTML
+  npapers = 0
+  hrefs   = []
+  authors = [] 
+  journal = []
+  cites   = []
+  temp    = []
+  for tag in root.iter("td"):
+    iclass = tag.get("class", None)
+    if(iclass=="gsc_a_t"):
+      for tag2 in tag.iter("a"):
+        href = "https://scholar.google.com/" + tag2.get("href",None)
+        hrefs.append(href)
+      for tag3 in tag.iter("div"):
+        temp.append(tag3.text)
+    if(iclass=="gsc_a_c"):
+      for tag4 in tag.iter("a"):
+        if(is_number(tag4.text)): 
+          cites.append(tag4.text)
+  npapers = len(hrefs)
+  ncites  = len(cites)
+
+  # If 0 cites then we need to add this manually
+  for i in range(npapers-ncites):
+    cites.append("0")
+
+  # Split temp array into authors and journal
+  for i in range(npapers):
+    authors.append(temp[2*i])
+    journal.append(temp[2*i+1])
+
+  # Make library
+  totcites = 0
+  for i in range(npapers):
+    p = Paper()
+    authorlist = authors[i].split(",")
+    # If more than 8 authors google adds ... in the end
+    if(len(authorlist)>= 8):
+      authorlist[7] = "et al."
+    p.authors = authorlist
+    p.journal = journal[i]
+    # We use bibcode to store the link for google
+    p.bibcode = href[i]  
+    p.cites = int(cites[i])
+    totcites += p.cites
+    papers.append(p)
+
+  # Verbose
+  print ''
+  print 'Total papers in Google Scholar = ', npapers
+  print 'Total cites in Google Scholar  = ', totcites
+  print 'Cites per paper Google Scholar = ', totcites/float(npapers)
+
+##############################################################################
+##############################################################################
+##############################################################################
+
+# Username at google scholar
+googleusername = "oDCHqpAAAAAJ"
+
+# Create google library (Not properly tested so for now not using the library 
+# for anything other than simply getting the number of papers and cites)
+mygooglelibrary = []
+make_google_library(mygooglelibrary,googleusername)
 
 ##############################################################################
 ##############################################################################
