@@ -5,7 +5,7 @@ the Newtonian Gauge for LCDM.
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
-* NB: Never used for anything useful so probably full of bugs.
+* NB: Never used for anything useful so probably full of bugs, but compares very good to CAMB.
 
 * Require the complex bessel library [ https://github.com/valandil/complex_bessel special ]. Compile and run as ./CMFB_MODEL
 
@@ -15,9 +15,7 @@ Hans A. Winther (2015) (hans.a.winther@gmail.com)
 
 * All recombination history (evolution of tau, n_e, etc.) related content is in 'Recombination'
 
-* The (physics of recombination) model specific functions are implemented in 'RecombinationMODEL'. If the 
-model does not alter the standard recomb. equations (apart from the specific form of H(a) etc.) then
-one can use the STANDARD version. 
+* The (physics of recombination) model specific functions are implemented in 'RecombinationMODEL'. If the model does not alter the standard recomb. equations (apart from the specific form of H(a) etc.) then one can use the STANDARD version. 
    * Require objects: 'Background'
 
 * All perturbations related content is in 'Perturbations'.

@@ -37,6 +37,8 @@
 //
 // The working precision can be set by changing realT
 //
+// Hans A. Winther (2015) (hans.a.winther@gmail.com)
+//
 //=======================================================
 
 using namespace std;
@@ -44,10 +46,8 @@ using namespace std;
 std::pair<realT,int> calc_nhalos_in_massrange(realT mmin, realT mmax);
 
 //=======================================================
-//=======================================================
 // Calculate nhalos and <rvir> over all halos in the
 // mass-range mmin < M < mmax
-//=======================================================
 //=======================================================
 
 pair<realT,int> calc_nhalos_in_massrange(realT mmin, realT mmax){
@@ -69,9 +69,7 @@ pair<realT,int> calc_nhalos_in_massrange(realT mmin, realT mmax){
 }
 
 //=======================================================
-//=======================================================
 // Calculate max-value of rvir in a mass range
-//=======================================================
 //=======================================================
 
 realT max_rvir_in_massrange(realT mmin, realT mmax){
@@ -88,9 +86,7 @@ realT max_rvir_in_massrange(realT mmin, realT mmax){
 }
 
 //=======================================================
-//=======================================================
 // Bin the AHF profile files over a mass-range
-//=======================================================
 //=======================================================
 
 void bin_ahf_profile(realT mmin, realT mmax, int nbins, string filename){
@@ -198,9 +194,7 @@ void bin_ahf_profile(realT mmin, realT mmax, int nbins, string filename){
 }
 
 //=======================================================
-//=======================================================
 // Main is main! Allocate memory and do some work!
-//=======================================================
 //=======================================================
 
 int main(int argv, char **argc){

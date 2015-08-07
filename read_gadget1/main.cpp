@@ -2,6 +2,11 @@
 #include <string>
 #include <sstream>
 
+//////////////////////////////////////////////////////
+// Code to read GADGET1 files
+// Hans A. Winther (2015) (hans.a.winther@gmail.com)
+//////////////////////////////////////////////////////
+
 //////////////////////////////////////
 // A copy of to_string since its not in std
 //////////////////////////////////////
@@ -82,9 +87,10 @@ void read_single_gadget_file(std::string fileprefix, int filenum, int *numfiles,
     read_gadget_header(fp, false);
 
   // Get number of files
-  *numfiles = header.num_files;
+  if(filenum==0)
+    *numfiles = header.num_files;
 
-  // Allocate memory
+  // Allocate memory for read buffer
   npart_now = header.npart[1];;
   buffer = new char[sizeof(float) * npart_now * 3];
   f = (float *) buffer;
@@ -128,6 +134,6 @@ void read_all_gadget_files(std::string fileprefix){
   std::cout << "Done reading. We have read a total of " << npart_read << " particles" << std::endl;
 }
 
-int main(int argc, char **argv){ 
+int main(int argc, char **argv){
   read_all_gadget_files("/Users/winther/mg_comp/lcdm_z0.0/gadget.");
 }

@@ -2,6 +2,11 @@
 #include<iomanip>
 #include "solve_poisson.h"
 
+/////////////////////////////////////////////////////
+// Code to solve 3D Poisson-like equations
+// Hans A. Winther (2015) (hans.a.winther@gmail.com)
+/////////////////////////////////////////////////////
+
 ///////////////////////////////////////
 // Run built-in test of the
 // solver to check that it works
