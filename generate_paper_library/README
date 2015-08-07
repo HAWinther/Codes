@@ -1,6 +1,6 @@
 ===============================================
-Python code to extract data from a NASA ADS
-personal library
+Python code to extract data from NASA ADS,
+Google Scholar, INSPIRE HEP and/or arXiv.
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
@@ -12,5 +12,6 @@ Hans A. Winther (2015) (hans.a.winther@gmail.com)
 
 * Outputs HTML with a lot of information. 
 
-* Checks if new papers have appeared that cite your papers
+* Checks if new papers have appeared that cite your papers and add this info to the HTML page
 
+* Sample outputs in *.html files

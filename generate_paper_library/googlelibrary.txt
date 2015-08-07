@@ -1,0 +1,102 @@
+20
+=================================
+oDCHqpAAAAAJ:u5HHmVD_uO8C
+Unified description of screened modified gravity
+65
+
+=================================
+oDCHqpAAAAAJ:u-x6o8ySG0sC
+Structure formation in the symmetron model
+47
+
+=================================
+oDCHqpAAAAAJ:d1gkVwhDpl0C
+Chameleon dark energy models with characteristic signatures
+35
+
+=================================
+oDCHqpAAAAAJ:9yKSN-GCB0IC
+Chameleons with field-dependent couplings
+31
+
+=================================
+oDCHqpAAAAAJ:qjMakFHDy7sC
+Systematic simulations of modified gravity: chameleon models
+29
+
+=================================
+oDCHqpAAAAAJ:2osOgNQ5qMEC
+Systematic simulations of modified gravity: symmetron and dilaton models
+27
+
+=================================
+oDCHqpAAAAAJ:IjCSPb-OGe4C
+ISIS: a new N-body cosmological code with scalar fields based on RAMSES-Code presentation and application to the shapes of clusters
+23
+
+=================================
+oDCHqpAAAAAJ:UeHWp8X0CEIC
+Environment Dependence of Dark Matter Halos in Symmetron Modified Gravity
+21
+
+=================================
+oDCHqpAAAAAJ:ufrVoPGSRksC
+Testing General Relativity with Present and Future Astrophysical Observations
+12
+
+=================================
+oDCHqpAAAAAJ:zYLM7Y9cAGgC
+Cosmology of Chameleons with Power-law Couplings
+11
+
+=================================
+oDCHqpAAAAAJ:Tyk-4Ss8FVUC
+Spatial variations of the fine-structure constant in symmetron models
+6
+
+=================================
+oDCHqpAAAAAJ:WF5omc3nYNoC
+Halo velocity profiles in screened modified gravity theories
+5
+
+=================================
+oDCHqpAAAAAJ:Y0pCki6q_DkC
+ApJ 748, 61 (Mar. 2012)
+5
+
+=================================
+oDCHqpAAAAAJ:G887dSk7Sz8C
+The Vainshtein mechanism beyond the quasi-static approximation
+4
+
+=================================
+oDCHqpAAAAAJ:eQOLeE2rZwMC
+Layzer-Irvine equation for scalar-tensor theories: A test of modified gravity N-body simulations
+3
+
+=================================
+oDCHqpAAAAAJ:W7OEmFMy1HYC
+Cosmological supersymmetric model of dark energy
+3
+
+=================================
+oDCHqpAAAAAJ:O0MA3yP7Y3UC
+Hydrodynamic effects in the symmetron and f (R)-gravity models
+2
+
+=================================
+oDCHqpAAAAAJ:YsMSGLbcyi4C
+A Fast Route to Non-Linear Clustering Statistics in Modified Gravity Theories
+2
+
+=================================
+oDCHqpAAAAAJ:_FxGoFyzp5QC
+Chameleon model with field-dependent couplings
+1
+
+=================================
+oDCHqpAAAAAJ:pbQCAAeKvsAC
+Modified Gravity N-body Code Comparison Project
+0
+
+=================================
