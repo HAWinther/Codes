@@ -6,7 +6,7 @@ Some of these codes are not properly tested and probably (definately) contain bu
 
 * cmb_code [C++]: Object Oriented Boltzmann code for computing scalar C_l's for LCDM and other models. Works in the Newtonian Gauge.
 
-* extract_paper_info_nasaads [Python]: Python script for extracting data about your articles (and articles that cite you) from the NASA ADS database. Outputs html with info about your papers and lets you know when new papers cite you.
+* generate_paper_library [Python]: Python script for extracting data about your articles (and articles that cite you) from the NASA ADS / Google Scholar / INSPIRE Hep and arXiv database. Outputs html with info about your papers and lets you know when new papers cite you. 
 
 * ode_solve [C++]: Simple code for solving coupled ordinary differential equations using RK4.
 
