@@ -2,12 +2,9 @@
 #include<iomanip>
 #include "solve_poisson.h"
 
-/////////////////////////////////////////////////////
+//======================================================
 // Code to solve 3D Poisson-like equations
-// Hans A. Winther (2015) (hans.a.winther@gmail.com)
-/////////////////////////////////////////////////////
-
-///////////////////////////////////////
+//
 // Run built-in test of the
 // solver to check that it works
 //
@@ -15,7 +12,9 @@
 // be Phi(x,y,z) = Sin(2pi*n1*x) * 
 //                 Sin(2pi*n1*x) * 
 //                 Sin(2pi*n1*z)
-///////////////////////////////////////
+//
+// Hans A. Winther (2015) (hans.a.winther@gmail.com)
+//======================================================
 
 void run_standard_test(){
   int ngrid = 128;
@@ -27,15 +26,15 @@ void run_standard_test(){
   mysolver.run_test();
 }
 
-///////////////////////////////////////
-// Make a random source and solve
-// the equation.
+//======================================================
+// Make a random source and solve the equation.
 //
-// For this case we keep the source 
-// and solution in different arrays
+// For this case we keep the source and solution in 
+// different arrays
+//
 // Other alternatives availiable:
 // see solve_poisson.h
-//////////////////////////////////////
+//======================================================
 
 void solve_poisson(){
   int ngrid = 32;
@@ -75,6 +74,7 @@ void solve_poisson(){
 
     // Only print every 1000 of the elements
     if(rand() % 1000 <= 1){
+
       // This illustrates how x,y,z in the grid are related to i
       realT x = (i % ngrid) / realT(ngrid);
       realT y = i/ngrid % ngrid / realT(ngrid);

@@ -1,9 +1,11 @@
 ===============================================
-Code to make Qubic Splines
+Code to solve a coupled ODEs using Runge-Kutta4
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
-* Templated on the type: Spline<Type>
+* Define the data-type realT (double,float,...) in the Makefile
+
+* All solve methods are contained in the header-file ode_solver.h 
 
 * See main.cpp for examples of how to use it. 
 

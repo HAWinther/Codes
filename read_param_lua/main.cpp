@@ -3,50 +3,66 @@
 #include <iostream>
 #include "readlua.h"
 
-//////////////////////////////////////////////////////
-// Code to read LUA input files
+//=======================================================
+// Code to read parameterfiles in LUA format
 // Hans A. Winther (2015) (hans.a.winther@gmail.com)
-//////////////////////////////////////////////////////
+//=======================================================
 
-/////////////////////////////////////////
+//=======================================================
 // Implementation of the read function
-/////////////////////////////////////////
+//=======================================================
 
 void ReadFileWithLua::read(){
-  int status;
-  std::string mystring;
-  int myint;
-  double mydouble;
+  std::string inpstring;
+  std::vector<double> inparray;
+  int inpint;
+  double inpdouble;
+  bool status;
 
+  // Check if file is open
   if(!isopen){
     std::cout << "LuaFile is not open so cannot read it!" << std::endl;
-    exit(1);
+    return;
   }
 
-  // Read from lua file
-  mystring  = std::string(read_string2("mystring", &status, true));
-  myint     = read_int("myint");
-  mydouble  = read_double("mydouble");
+  // Read different parameters from lua file. False = we don't abort it param is not found
 
-  // Output the data read from the lua file
-  std::cout << "String : " << mystring << std::endl;
-  std::cout << "Int    : " << myint    << std::endl;
-  std::cout << "Double : " << mydouble << std::endl;
+  // Look for a string named 'inpstring'
+  inpstring  = read_string      ("inpstring", &status, false);
+  if(status) std::cout << "String 'inpstring' found : " << inpstring << std::endl;
+  std::cout << std::endl; 
+
+  // Look for an integer named 'inpint'
+  inpint     = read_int         ("inpint",    &status, false);
+  if(status) std::cout << "Integer 'inpint'   found  : " << inpint << std::endl;
+  std::cout << std::endl; 
+
+  // Look for an double named 'inpdouble'
+  inpdouble  = read_double      ("inpdouble", &status, false);
+  if(status) std::cout << "Double 'inpdouble' found  : " << inpdouble << std::endl;
+  std::cout << std::endl; 
+
+  // Look for an double array named 'inparray'
+  inparray   = read_array<double>("inparray",  &status, false);
+  if(status){
+    std::cout << "Array 'inparray'   found  : ";
+    for(int i=0;i<inparray.size();i++)
+      std::cout << (i==0 ? "" : ", ") << inparray[i];
+    std::cout << std::endl; 
+  }
 }
 
-/////////////////////////////////////////
-// Open a lua paramfile and read it
-/////////////////////////////////////////
-
 int main(int argv, char **argc){
-  ReadFileWithLua paramfile;
-
-  if(argv == 1) exit(1);
+  std::string filename;
+  if(argv == 1) {
+    std::cout << "Parameterfile not provided.\nRun as ./readlua input.lua" << std::endl;
+    exit(1);
+  }
+  filename = argc[1];
 
   // Open and read parameters
-  paramfile.open(argc[1]);
-  paramfile.read();
-  paramfile.close();
+  ReadFileWithLua paramfile;
+  paramfile.open_read_close(filename);
 
   return 0;
 }

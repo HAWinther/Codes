@@ -71,12 +71,10 @@ class PofkModifiedGravity{
     }
 
     ~PofkModifiedGravity(){
-
-      if(kk !=NULL)
+      if(kk != NULL)
         delete[] kk;
-      if(pofk !=NULL)
+      if(pofk != NULL)
         delete[] pofk;
-      kk = pofk = NULL;
       if(pofkratio_spline != NULL)
         delete pofkratio_spline;
       pofkratio_spline = NULL;
@@ -206,7 +204,7 @@ class PofkModifiedGravity{
 
       // Spline
       pofkratio_spline = new Spline();
-      pofkratio_spline->make_spline(kk,pofk,nk,1e30,1e30,2,"P(k) / P(k)_LCDM ratio");
+      pofkratio_spline->make_spline(&kk[0],&pofk[0],nk,1e30,1e30,2,"P(k) / P(k)_LCDM ratio");
       delete[] ic;
       solved = true;
     }

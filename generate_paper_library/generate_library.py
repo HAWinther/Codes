@@ -853,7 +853,7 @@ def check_for_new_citations(papers, filename, libtype, verbose):
   if(verbose): print 'Comparing old library with current one. We have',newpapers,'new papers'
   if(newpapers>0):
     html += "<p>\n"
-    html += "  We have "+str(newpapers)+" papers\n"
+    html += "  We have "+str(newpapers)+" new paper in the library!\n"
     html += "</p>\n"
 
   # Loop over all papers and compare old and new library [only check papers and codes of cites]

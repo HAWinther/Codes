@@ -1,6 +1,5 @@
 #include <iomanip>
-#include <vector>
-#include "OdeSolver.h"
+#include "ode_solver.h"
 
 //=======================================================
 // Code to solve coupled systems of ODE
@@ -8,21 +7,21 @@
 //=======================================================
 
 //=======================================================
-// The ODE dy/dx = -2xy 
-// ===> y(x) = y(0) * Exp(-x^2)
+// The ODE dy/dx = -2xy
+// ===> y[x] = y[0] * Exp[-x^2]
 //=======================================================
 
-void ode1(double x, std::vector<double> &y, std::vector<double> &dydx){
+void ode1(realT x, realT *y, realT *dydx){
   dydx[0] = -2.0*x*y[0];
 }
 
 //=======================================================
 // The ODE {dy_1/dx = y_2, dy_2/dx = 1}
-// ==> y_2(x) = y_2(0) + x
-//     y_1(x) = y_1(0) + y_2(0)x + x^2/2
+// ==> y_2[x] = y_2[0] + x
+//     y_1[x] = y_1[0] + y_2[0]x + x^2/2
 //=======================================================
 
-void ode2(double x, std::vector<double> &y, std::vector<double> &dydx){
+void ode2(realT x, realT *y, realT *dydx){
   dydx[0] = y[1];
   dydx[1] = 1.0;
 }
@@ -32,10 +31,10 @@ void ode2(double x, std::vector<double> &y, std::vector<double> &dydx){
 //=======================================================
 
 void solve_ode1(){
-  std::vector<double> x, y, ic;
-  double xmin, xmax, yini;
+  realT *x, *y, *ic;
+  realT xmin, xmax;
+  realT yini;
   int n, neq;
-  bool verbose = false;
 
   std::cout << "==================" << std::endl;
   std::cout << "   Solve ODE 1    " << std::endl;
@@ -45,7 +44,7 @@ void solve_ode1(){
   neq = 1;
 
   // Initial conditions for ODE1
-  ic = std::vector<double>(neq,0.0);
+  ic = new realT[neq];
   xmin = 0.0, xmax = 1.0;
   ic[0] = yini = 1.0;
 
@@ -60,7 +59,7 @@ void solve_ode1(){
   myode.set_initial_conditions(xmin, xmax, ic);
 
   // Solve
-  myode.solve(verbose);
+  myode.solve(false);
 
   // Get pointers to solution
   x = myode.x_array();
@@ -71,6 +70,8 @@ void solve_ode1(){
     std::cout << std::setw(2) << i << " / " << n << "  x: " << std::setw(12) << x[i];
     std::cout << "  y: " << std::setw(12) << y[i] << " delta_y: " <<  std::setw(12) << y[i] - exp(-x[i]*x[i]) << std::endl; 
   }
+
+  delete[] ic;
 }
 
 //=======================================================
@@ -78,10 +79,10 @@ void solve_ode1(){
 //=======================================================
 
 void solve_ode2(){
-  std::vector<double> x, y1, y2, ic;
-  double xmin, xmax, y1ini, y2ini;
+  realT *x, *y1, *y2, *ic;
+  realT xmin, xmax;
+  realT y1ini, y2ini;
   int n, neq;
-  bool verbose = true;
 
   std::cout << "==================" << std::endl;
   std::cout << "   Solve ODE 2    " << std::endl;
@@ -91,13 +92,14 @@ void solve_ode2(){
   neq = 2;
 
   // Initial conditions for ODE1
-  ic = std::vector<double>(neq,0.0);
+  ic = new realT[neq];
   xmin = 0.0, xmax = 1.0;
   ic[0] = y1ini = 1.0;
   ic[1] = y2ini = 1.0;
 
-  // Number of points between xmin and xmax to store the solution in
-  n = 10;
+  // Number of points between xmin and xmax
+  // to store the solution in
+  n = 20;
 
   // Set up solver for ODE2
   OdeSolver myode(n, neq, ode2);
@@ -105,14 +107,11 @@ void solve_ode2(){
   // Set initial conditions
   myode.set_initial_conditions(xmin, xmax, ic);
 
-  // Change precision goal and performance params [epsilon, h_start, hmin]
-  myode.set_precision(1e-20,1.0e-12,0.0);
-
   // Solve
-  myode.solve(verbose);
+  myode.solve(false);
 
-  // Get solution
-  x  = myode.x_array();
+  // Get pointers to solution
+  x = myode.x_array();
   y1 = myode.y_array(0);
   y2 = myode.y_array(1);
 
@@ -122,6 +121,8 @@ void solve_ode2(){
     std::cout << "  y1: " <<  std::setw(12) << y1[i] << " delta_y1: " <<  std::setw(12) << y1[i] - 1.0 - x[i] - x[i]*x[i]/2.0;
     std::cout << "  y2: " <<  std::setw(12) << y2[i] << " delta_y2: " <<  std::setw(12) << y2[i] - 1.0 - x[i] << std::endl; 
   }
+
+  delete[] ic;
 }
 
 int main(int argv, char **argc){

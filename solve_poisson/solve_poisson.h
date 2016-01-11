@@ -40,19 +40,14 @@ class PoissonSolver{
     realT mass;
   public:
 
-    PoissonSolver(){
-      in=out=NULL;
+    PoissonSolver() : n(0), in(NULL), out(NULL), mass(0.0){
       weallocatein=weallocateout=madeplans=false;
-      mass=0.0;
-      n=0;
     }
 
     //===========================================================
     // Only gridsize given so allocate in and out ourself
     //===========================================================
-    PoissonSolver(int n){
-      this->n = n;
-
+    PoissonSolver(int n) : n(n), mass(0.0){
       in  = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * n*n*n);
       out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * n*n*n);
 
@@ -61,7 +56,6 @@ class PoissonSolver{
 
       weallocatein=weallocateout=true;
       madeplans=true;
-      mass = 0.0;
     }
 
     //===========================================================
@@ -69,44 +63,30 @@ class PoissonSolver{
     // After in will have the solution and out will have the
     // FFTed source multiplied by the laplacian term 1/k^2+m^2
     //===========================================================
-    PoissonSolver(fftw_complex *in, fftw_complex *out, int n){
-      this->n = n;
-
-      this->in  = in;
-      this->out = out;
-
+    PoissonSolver(fftw_complex *in, fftw_complex *out, int n) : n(n), in(in), out(out), mass(0.0){
       p_forward  = fftw_plan_dft_3d(n, n, n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
       p_backward = fftw_plan_dft_3d(n, n, n, out, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-      weallocatein=weallocateout=false;
-      madeplans=true;
-      mass = 0.0;
+      weallocatein = weallocateout = false;
+      madeplans = true;
     }
 
     //===========================================================
     // In array given so just use this. In will be overwritten with the solution
     //===========================================================
-    PoissonSolver(fftw_complex *in, int n){
-      this->n = n;
-
-      this->in  = in;
-      this->out = in;
-
+    PoissonSolver(fftw_complex *in, int n) : n(n), mass(0.0), in(in), out(in){
       p_forward  = fftw_plan_dft_3d(n, n, n, in, in, FFTW_FORWARD, FFTW_ESTIMATE);
       p_backward = fftw_plan_dft_3d(n, n, n, in, in, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-      weallocatein=weallocateout=false;
-      madeplans=true;
-      mass = 0.0;
+      weallocatein = weallocateout = false;
+      madeplans = true;
     }
 
     //===========================================================
     // Real in array is given. Allocate internal in array and copy over data
     // In the end the solution will be in the internal in[] only
     //===========================================================
-    PoissonSolver(realT *in, int n){
-      this->n = n;
-
+    PoissonSolver(realT *in, int n) : n(n), mass(0.0){
       this->in  = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * n*n*n);
       this->out = this->in;
 
@@ -118,10 +98,8 @@ class PoissonSolver{
       p_forward  = fftw_plan_dft_3d(n, n, n, this->in, this->in, FFTW_FORWARD, FFTW_ESTIMATE);
       p_backward = fftw_plan_dft_3d(n, n, n, this->in, this->in, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-      weallocatein=true;
-      weallocateout=false;
-      madeplans=true;
-      mass = 0.0;
+      weallocatein = madeplans = true;
+      weallocateout = false;
     }
 
     ~PoissonSolver(){
@@ -158,12 +136,10 @@ class PoissonSolver{
         fftw_destroy_plan(p_forward);
         fftw_destroy_plan(p_backward);
       }
-      n=0;
-      mass=0.0;
-      weallocatein=false;
-      weallocateout=false;
-      madeplans=false;
-      in=out=NULL;
+      n = 0;
+      mass = 0.0;
+      weallocatein = weallocateout = madeplans=false;
+      in = out = NULL;
     }
 
     //===========================================================

@@ -5,12 +5,9 @@
 SHELL := /bin/bash
 
 # Set compiler
-# CC = g++-mp-4.8
+CC = g++-mp-4.8
 
-# Define the type
-type=DOUBLE
-
-C = -O3 $(OPTIONS) -D$(type)
+C = -O3 -Wall $(OPTIONS)
 
 TARGETS := odesolver
 all: $(TARGETS)
@@ -19,10 +16,10 @@ all: $(TARGETS)
 OBJS = main.o
 
 # DEPENDENCIES
-main.o		: main.cpp ode_solver.h
+main.o		: main.cpp
 
 # HEADERS
-HEADERS = ode_solver.h
+HEADERS = OdeSolver.h
 
 odesolver: $(OBJS)
 	${CC} -o $@ $^ $C $I $L

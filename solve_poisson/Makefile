@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 # Set compiler
-# CC = g++-mp-4.8
+CC = g++-mp-4.8
 
 # Set the type
 type=DOUBLE

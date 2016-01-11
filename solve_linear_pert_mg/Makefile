@@ -8,7 +8,7 @@ SHELL := /bin/bash
 type=DOUBLE
 
 # Set compiler
-# CC = g++-mp-4.8
+CC = g++-mp-4.8
 
 C = -O3 -D$(type)
 

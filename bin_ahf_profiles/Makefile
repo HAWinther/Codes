@@ -5,11 +5,11 @@
 SHELL := /bin/bash
 
 # Set compiler
-# CC = g++-mp-4.8
+CC = g++-mp-4.8
 
 # Includes for LUA 5.x or above
-L = -L/Users/winther/local/lua-5.2.3/install/lib -L/Users/winther/local/lib -llua -ldl
-I = -I/Users/winther/local/lua-5.2.3/install/include -I/Users/winther/local/include -lm
+L = -L/Users/winther/local/lua-5.2.3/install/lib -L/Users/winther/local/lib -llua -ldl -lm
+I = -I/Users/winther/local/lua-5.2.3/install/include -I/Users/winther/local/include
 
 OPTIONS = -O3
 
