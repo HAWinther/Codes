@@ -1,0 +1,16 @@
+Example cosmological initial conditions
+Boxsize = 200 Mpc/h  N = 62^3 particles
+
+Created from LCDM comsology with
+Omega_m = 0.2669
+Omega_l = 0.7329
+sigam8  = 0.8
+
+Format
+
+npart
+x y z vx vy vz
+x y z vx vy vz
+...
+
+with x in Mpc/h and v in km/s

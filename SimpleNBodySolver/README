@@ -1,0 +1,95 @@
+===============================================
+Very simple N-body solver for both Newtonian 
+and Modified Gravity
+Not made for science simulations, but useful for 
+testing and implementing new models
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Requires the fftw3 library [http://fftw.org/]
+
+* Compile as g++ main.cpp -O3 -lfftw3  [options] -o nbodysolver
+
+* Run as ./nbodysolver or ./nbodysolver input.inp 
+  In the first case using standard parameters in the second
+  reads these from input.inp
+
+* Add -DOMP -fopenmp to use OpenMP and add -DOMP_FFT -lfftw3_threads for parallel FFT
+
+* To use the slower but more accurate cloud-in-cell (CIC) 
+  or triangular shaped cloud (TSC) density assignment 
+  and force interpolation use -DCIC or -DTSC
+
+* To run with f(R) gravity make sure we have -DFOFR 
+
+* To run with the symmetron use -DSYMMETRON
+
+* To use scalar field solver to solve the standard Poisson eq. use -DGR
+  in the Makefile and run with _modified_gravity = true
+
+* To test the scalar field solver run with _static_run = true
+
+* Sample initial conditions in ic/
+
+* Probably full of bugs...
+
+===============================================
+Code units: 
+===============================================
+
+Co-moving position x_code = x/B where B is Boxsize
+Velocity v_code = a v / (H0 B) 
+Time variable is dt_code = dt H0 / a^2
+DM density rho is in units of the background density
+so rho = 1 when no perturbations and <rho> = 1
+
+Geodesic equation in code units is [' = d/dt_code]
+x_code'' = -DPhi
+
+Propagates this using the Drift-Kick-Drift leapfrog method
+x_code^(n  )   = x_code^(n-1/2) + dt/2 * v^(n)
+v_code^(n+1)   = v_code^(n)     + dt   * (-DPhi)^(n)
+x_code^(n+1/2) = x_code^(n)     + dt/2 * v^(n+1)
+
+Newtonian force is found by Fourier transforms on
+the Poisson equation:
+D^2 Phi = 3/2 Omegam a (rho - 1)
+===> DPhi = F^{-1}[ i k_vec F[ 3/2 Omegam a (rho - 1) ] / k^2 ]
+
+Simple nearest grid-point density assignment to the grid
+
+The time-stepping is just simple fixed steps in 'da'
+with no checks. Should be adaptive.
+
+All parameters are set in init() below or use parameterfile
+
+===============================================
+
+Modified gravity by taking _modified_gravity = true
+Implemented for Hu-Sawicky f(R) gravity [compile with -DFOFR]
+
+The geodesic equation is modified to (roughly)
+x_code'' = -DPhi - D|f_R|
+
+where the scalar field f_R is determined by
+the Klein-Gordon equation
+D^2 f_R = ... function(f_R, rho) ...
+
+The code scalar-field is phi:  a^2|f_R| = e^phi
+
+This non-linear field equation is solved using Newton-
+Gauss-Seidel relaxation methods with multigrid acceleration
+The solver is in multigrid_solver.h All the model specific
+implementation is inside FOFR define tags
+
+Convergence criterion set in init(). Very low values means a
+lot longer time to converge (but impact on solution might 
+be very small). Typical values are ~1e-6 - 1e-10 depending on
+model. Increase number of NGS steps if diverging when entering multigrid.
+
+The force is extracted using a finite-difference of the
+solution Df_R => e^phi Dphi. This is now just gradient of 
+closest grid-node. Proper interpolation should be done.
+
+===============================================
+

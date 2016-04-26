@@ -3,16 +3,17 @@ Code to solve 3D Poisson-like equations using FFTW
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
-* Define the data-type realT (double,float,...) in the Makefile
-
-* Requies FFTW3 library. Set up paths in Makefile.
+* Requires FFTW3 library.
 
 * The equation to solve is D^2 Phi - m^2 Phi = S where S is a given source
-  and 'm' is a constant. m = 0 by default. Change by calling set_massterm(mass)
-
+  and 'm' is a constant. m = 0 by default. Change by calling set_mass(mass)
+  If the Laplacian in the code-units has a different scaling, i.e.
+                 D^2 = Ad^2/dx^2 + Bd^2/dx^2 + Cd^2/dx^2
+  then one can change A,B,C (default = 1) by calling set_scalefactor(A,B,C)
+  
 * Assumes a periodic box with x,y,z in [0,1] so <S> = 0 is required for consistency
 
-* All solve methods are contained in the header-file solve_poisson.h
+* All solve methods are contained in the header-file
 
 * See main.cpp for examples of how to use it.
 
