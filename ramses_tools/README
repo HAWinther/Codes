@@ -1,0 +1,13 @@
+===============================================
+Some useful codes for use with RAMSES
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* read_write_ramses : Some code to read RAMSES files. 
+    * Read info.txt file.
+    * Read particle files and store data.
+    * Make a ic_deltab file for any given cosmology and sim. param.
+    * See read_write_ramses.h for all functions that is implemented.
+
+* generate_ic_deltab : Standalone code to generate a ic_deltab file given cosmological parameters, levelmin, boxsize and astart.
+

@@ -7,7 +7,7 @@ SHELL := /bin/bash
 # Set compiler
 CC = g++-mp-4.8
 
-C = -O3 -Wall $(OPTIONS)
+C = -O3 -Wall $(OPTIONS) -std=c++11
 
 TARGETS := odesolver
 all: $(TARGETS)

@@ -3,129 +3,131 @@
 #include "OdeSolver.h"
 
 //=======================================================
-// Code to solve coupled systems of ODE
+// 
+// Demonstration of simple class to solve first order 
+// coupled ODEs.
+//
 // Hans A. Winther (2015) (hans.a.winther@gmail.com)
+//
 //=======================================================
 
 //=======================================================
-// The ODE dy/dx = -2xy 
-// ===> y(x) = y(0) * Exp(-x^2)
+// The single ODE {dy/dx = - 2xy} which has the 
+// analytical solution:
+// 
+//     y(x) = y(0) * Exp(-x^2)
 //=======================================================
-
-void ode1(double x, std::vector<double> &y, std::vector<double> &dydx){
-  dydx[0] = -2.0*x*y[0];
+void ode_single_rhs(const double &x, const std::vector<double> &y, std::vector<double> &dydx){
+  dydx[0] = -2.0 * x * y[0];
+}
+double ode_single_analytical(double x, std::vector<double> &ic){
+  return ic[0] * exp(-x * x);
 }
 
 //=======================================================
-// The ODE {dy_1/dx = y_2, dy_2/dx = 1}
-// ==> y_2(x) = y_2(0) + x
+// The coupled ODE {dy_1/dx = y_2, dy_2/dx = 1} which 
+// has the analytical solution:
+//
 //     y_1(x) = y_1(0) + y_2(0)x + x^2/2
+//     y_2(x) = y_2(0) + x
 //=======================================================
-
-void ode2(double x, std::vector<double> &y, std::vector<double> &dydx){
+void ode_coupled_rhs(const double &x, const std::vector<double> &y, std::vector<double> &dydx){
   dydx[0] = y[1];
   dydx[1] = 1.0;
 }
+double ode_coupled_analytical(double x, std::vector<double> &ic, int i){
+  if(i==0) return ic[0] + ic[1] * x + x * x / 2.0;
+  return ic[1] + x;
+}
 
 //=======================================================
-// Solve ODE system 1
+// Solve a single ODE
 //=======================================================
 
-void solve_ode1(){
+void solve_single_ode(){
   std::vector<double> x, y, ic;
-  double xmin, xmax, yini;
+  double xmin = 0.0, xmax = 1.0;
   int n, neq;
   bool verbose = false;
 
-  std::cout << "==================" << std::endl;
-  std::cout << "   Solve ODE 1    " << std::endl;
-  std::cout << "==================" << std::endl;
+  std::cout << "=========================================" << std::endl;
+  std::cout << "Solve single ODE:     dy/dx = -2xy       " << std::endl;
+  std::cout << "=========================================" << std::endl;
+  
+  // Number of points between xmin and xmax to store the solution in
+  n = 20;
 
   // Number of equations
   neq = 1;
 
-  // Initial conditions for ODE1
-  ic = std::vector<double>(neq,0.0);
-  xmin = 0.0, xmax = 1.0;
-  ic[0] = yini = 1.0;
+  // Initial conditions for ODE: y(0) = 1
+  ic = std::vector<double>(neq, 1.0);
 
-  // Number of points between xmin and xmax
-  // to store the solution in
-  n = 20;
-
-  // Set up solver for ODE1
-  OdeSolver myode(n, neq, ode1);
-
-  // Set initial conditions
-  myode.set_initial_conditions(xmin, xmax, ic);
-
-  // Solve
+  OdeSolver myode(n, neq, ode_single_rhs);
+  myode.set_ic(xmin, xmax, ic);
   myode.solve(verbose);
 
-  // Get pointers to solution
-  x = myode.x_array();
-  y = myode.y_array(0);
+  // Extract solution
+  x = myode.get_x();
+  y = myode.get_y();
 
   // Print data
-  for(int i=0;i<n;i++){
+  std::cout << std::endl << "Solution:" << std::endl;
+  for(int i = 0; i < n; i++){
     std::cout << std::setw(2) << i << " / " << n << "  x: " << std::setw(12) << x[i];
-    std::cout << "  y: " << std::setw(12) << y[i] << " delta_y: " <<  std::setw(12) << y[i] - exp(-x[i]*x[i]) << std::endl; 
+    std::cout << "  y: " << std::setw(12) << y[i] << " Error: " <<  std::setw(12) << y[i] - ode_single_analytical(x[i], ic) << std::endl; 
   }
+  std::cout << std::endl;
 }
 
 //=======================================================
-// Solve ODE system 2
+// Solve a coupled ODE system
 //=======================================================
 
-void solve_ode2(){
+void solve_coupled_ode(){
   std::vector<double> x, y1, y2, ic;
-  double xmin, xmax, y1ini, y2ini;
+  double xmin = 0.0, xmax = 1.0;
   int n, neq;
   bool verbose = true;
 
-  std::cout << "==================" << std::endl;
-  std::cout << "   Solve ODE 2    " << std::endl;
-  std::cout << "==================" << std::endl;
+  std::cout << "=========================================" << std::endl;
+  std::cout << "Solve coupled ODE:   dy1/dx=y2, dy2/dx=1 " << std::endl;
+  std::cout << "=========================================" << std::endl;
+  
+  // Number of points between xmin and xmax to store the solution in
+  n = 10;
 
   // Number of equations
   neq = 2;
 
-  // Initial conditions for ODE1
-  ic = std::vector<double>(neq,0.0);
-  xmin = 0.0, xmax = 1.0;
-  ic[0] = y1ini = 1.0;
-  ic[1] = y2ini = 1.0;
+  // Initial conditions for ODEs: y1(0) = y2(0) = 1
+  ic = std::vector<double>(neq, 1.0);
 
-  // Number of points between xmin and xmax to store the solution in
-  n = 10;
+  OdeSolver myode(n, neq, ode_coupled_rhs);
+  myode.set_ic(xmin, xmax, ic);
+  
+  // Set precision goal and performance params: [epsilon, h_start, hmin]
+  myode.set_precision(1e-20, 1e-12, 0.0);   
+  
+  myode.solve(verbose);                     
 
-  // Set up solver for ODE2
-  OdeSolver myode(n, neq, ode2);
-
-  // Set initial conditions
-  myode.set_initial_conditions(xmin, xmax, ic);
-
-  // Change precision goal and performance params [epsilon, h_start, hmin]
-  myode.set_precision(1e-20,1.0e-12,0.0);
-
-  // Solve
-  myode.solve(verbose);
-
-  // Get solution
-  x  = myode.x_array();
-  y1 = myode.y_array(0);
-  y2 = myode.y_array(1);
+  // Extract solution
+  x  = myode.get_x();
+  y1 = myode.get_y(0);
+  y2 = myode.get_y(1);
 
   // Print data
-  for(int i=0;i<n;i++){
-    std::cout <<  std::setw(2) << i+1 << " / " << n << "  x: " <<  std::setw(12) <<x[i];
-    std::cout << "  y1: " <<  std::setw(12) << y1[i] << " delta_y1: " <<  std::setw(12) << y1[i] - 1.0 - x[i] - x[i]*x[i]/2.0;
-    std::cout << "  y2: " <<  std::setw(12) << y2[i] << " delta_y2: " <<  std::setw(12) << y2[i] - 1.0 - x[i] << std::endl; 
+  std::cout << std::endl << "Solution:" << std::endl;
+  for(int i = 0; i < n; i++){
+    std::cout <<  std::setw(2) << i+1 << " / " << n << "  x: " <<  std::setw(12) << x[i];
+    std::cout << "  y[1]: " <<  std::setw(12) << y1[i] << " Error[1]: " <<  std::setw(12) << y1[i] - ode_coupled_analytical(x[i], ic, 0);
+    std::cout << "  y[2]: " <<  std::setw(12) << y2[i] << " Error[2]: " <<  std::setw(12) << y2[i] - ode_coupled_analytical(x[i], ic, 1) << std::endl; 
   }
+  std::cout << std::endl;
 }
 
 int main(int argv, char **argc){
-  solve_ode1();
-  solve_ode2();
+  solve_single_ode();
+  solve_coupled_ode();
 }
 

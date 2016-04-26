@@ -1,0 +1,13 @@
+===============================================
+Code to analyze voids from ZOBOV output
+Hans A. Winther (2015) (hans.a.winther@gmail.com)
+===============================================
+
+* Reads in ZOBOV files and files with position of the tracers
+
+* Makes a tree of the voids
+
+* Computes spherical and/or boundary profiles over a void-stack
+
+* Computes void-shapes
+

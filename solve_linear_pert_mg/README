@@ -5,16 +5,12 @@ Geff(k,a)/G term
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
-* Define the data-type realT (double,float,...) in the Makefile
-
-* Assumes for simplicity LCDM background (but can easily be changes)
-
-* Specify Geff(k,a)/G and run.
+* Specify Geff(k,a)/G and background cosmology H(a) and run.
 
 * Outputs the ratio P_MG(k,a) / P_LCDM(k,a) for a given 'a'.
 
-* All solve methods are contained in the header-file linear_pert_solver.h
-     * Requires: ode_solver.h and spline.h (included here for simplicity)
+* All solve methods are contained in the header-file
+     * Requires: OdeSolver and Spline (included here for simplicity)
 
 * See main.cpp for examples of how to use it. 
 

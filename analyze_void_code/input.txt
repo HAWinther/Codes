@@ -1,0 +1,7 @@
+/mn/stornext/d7/astcosim/N256_B128_test/model/z0.000/data/gadgetfiles/gadget.
+../test_output/voltest.dat
+../test_output/dens0.2/text.dat
+../test_output/p.dat
+../test_output/dens0.2/z.dat
+../test_output/adjtest.dat
+voidtree.dat

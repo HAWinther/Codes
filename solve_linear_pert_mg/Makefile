@@ -4,25 +4,23 @@
 
 SHELL := /bin/bash
 
-# Define the type
-type=DOUBLE
-
 # Set compiler
-CC = g++-mp-4.8
+CC = g++-mp-4.8 -std=c++11
 
-C = -O3 -D$(type)
+C = -O3
 
 TARGETS := mglinearpert
 all: $(TARGETS)
 
 # OBJECT FILES
-OBJS = main.o
+OBJS = Spline.o main.o
 
 # DEPENDENCIES
-main.o		: main.cpp linear_pert_solver.h spline.h ode_solver.h
+Spline.o  : Spline.cpp
+main.o		: main.cpp
 
 # HEADERS
-HEADERS = linear_pert_solver.h spline.h ode_solver.h
+HEADERS = PofkModifiedGravity.h Spline.h OdeSolver.h
 
 mglinearpert: $(OBJS)
 	${CC} -o $@ $^ $C $I $L
