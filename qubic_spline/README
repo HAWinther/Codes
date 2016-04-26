@@ -3,7 +3,9 @@ Code to make Qubic Splines
 Hans A. Winther (2015) (hans.a.winther@gmail.com)
 ===============================================
 
-* Templated on the type: Spline<Type>
+* Templated on the type: QubicSpline<Type>
+  DSpline == QubicSpline<double>
+  FSpline == QubicSpline<float>
 
 * See main.cpp for examples of how to use it. 
 
