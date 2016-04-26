@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 # Set compiler
-CC = g++-mp-4.8
+CC = g++ -std=c++11
 
 C = -O3 $(OPTIONS)
 
@@ -13,10 +13,10 @@ TARGETS := qubicspline
 all: $(TARGETS)
 
 # OBJECT FILES
-OBJS = main.o
+OBJS = Spline.o main.o
 
 # DEPENDENCIES
-main.o		: main.cpp
+main.o		: main.cpp Spline.cpp
 
 # HEADERS
 HEADERS = Spline.h

@@ -1,108 +1,100 @@
-#include<iomanip>
+#include <iomanip>
+#include <vector>
 #include "Spline.h"
 
-void output_result(double xnow, double ynow, double dynow);
-void test_spline();
-
-//=========================================================================
-// Code to make simple qubic splines
-// Use demonstrated for the function y = x^2
+//==================================================================
+// Example use of the QubicSpline class
 // Hans A. Winther (2015) (hans.a.winther@gmail.com)
-//=========================================================================
+//==================================================================
 
-void test_spline(){
-  double xmin, xmax, xnow, ynow, dynow, dydx1, dydxn;
-  Spline<double> func, *gfunc, hfunc;
+void output(double xx, double yy, double dy);
+double f(double x){ return x * x; }
+double dfdx(double x){ return 2.0 * x; }
+
+int main(int argc, char** argv){
+  double xmin, xmax, xx, yy, dy;
+  float *xp, *yp;
+  int n, m;
   std::vector<double> x, y;
-  int n, splinetype;
+  DSpline f_spline, g_spline;
 
-  // Calculate y = x2 for x in [-10,10]
-  n    = 15;
-  xmin = -10.0; xmax =  10.0;
-  for(int i=0;i<n;i++){
-    x.push_back(xmin + (xmax-xmin)*i/double(n-1));
-    y.push_back(x[i]*x[i]);
+  //================================================================
+  // Set (x,y) to satisfy y = x^2 for x in [1,10]
+  //================================================================
+  n     = 10,  m = 2*n;
+  xmin  = 1.0, xmax  = 10.0;
+  x = y = std::vector<double>(n, 0.0);
+  for(int i = 0; i < n; i++){
+    x[i] = xmin + (xmax - xmin) * i/double(n-1);
+    y[i] = f(x[i]);
   }
-
+  
   //================================================================
-  // Example 1: 
+  // Example 1: Natural spline
   //================================================================
 
-  // If the x-array spacing is not regular (or known)
-  splinetype = 0;
+  f_spline = DSpline(x, y, "Test spline 1");
 
-  // Natural spline boundary conditions
-  dydx1 = dydxn = 1e30;
-
-  // Contruct spline
-  func = Spline<double>(x,y,n,dydx1,dydxn,splinetype,"Test spline 1");
-
-  std::cout << "Test 1 of spline for y = x2" << std::endl;
-  for(int i=0;i<n-1;i++){
-    xnow  = xmin + (xmax-xmin)*(i+0.5)/double(n-1);
-    ynow  = func(xnow); 
-    dynow = func.dfdx(xnow); 
-    output_result(xnow,ynow,dynow);
+  std::cout << "[Test 1 of spline for f(x) = x^2]" << std::endl;
+  for(int i = 0; i < m; i++){
+    xx = xmin + (xmax - xmin) * i/double(m-1);
+    yy = f_spline(xx); 
+    dy = f_spline.dfdx(xx); 
+    output(xx, yy, dy);
   }
   std::cout << std::endl;
 
   //================================================================
-  // Example 2: Using new + direct lookup
+  // Example 2: We supply boundary conditions
   //================================================================
 
-  // The x-array is lineary spaced so use direct lookup to speed it up
-  splinetype = 1;
+  g_spline = DSpline(x, y, dfdx(xmin), dfdx(xmax), "Test spline 2");
 
-  // Natural spline boundary conditions
-  dydx1 = dydxn = 1e30;
-
-  // Contruct spline
-  gfunc = new Spline<double>(x,y,n,dydx1,dydxn,splinetype,"Test spline 2");
-
-  std::cout << "Test 2 of spline for y = x2 | delta_y = y-x2" << std::endl;
-  for(int i=0;i<n-1;i++){
-    xnow  = xmin + (xmax-xmin)*(i+0.5)/double(n-1);
-    ynow  = gfunc[0](xnow);
-    dynow = gfunc->dfdx(xnow);
-    output_result(xnow,ynow,dynow);
+  std::cout << "[Test 2 of spline for f(x) = x^2 with analytical BC (dfdx = 2x)]" << std::endl;
+  for(int i = 0; i < m; i++){
+    xx = xmin + (xmax - xmin) * i/double(m-1);
+    yy = g_spline.f(xx);
+    dy = g_spline.dfdx(xx);
+    output(xx, yy, dy);
   }
   std::cout << std::endl;
 
   //================================================================
-  // Example 3: Use boundary conditions for dy/dx
+  // Example 3: Init from *, using float and show some features
   //================================================================
 
-  // The x-array is lineary spaced so use direct lookup to speed it up
-  splinetype = 1;
-
-  // Analytical boundary conditions
-  dydx1 = 2*xmin;
-  dydxn = 2*xmax;
-
-  // Contruct spline
-  hfunc = Spline<double>(x,y,n,dydx1,dydxn,splinetype,"Test spline 3");
-
-  std::cout << "Test 3 of spline for y = x2 with analytical BC (y'=2x) | delta_y = y-x2 " << std::endl;
-  for(int i=0;i<n-1;i++){
-    xnow  = xmin + (xmax-xmin)*(i+0.5)/double(n-1)+1.0;
-    ynow  = hfunc.f(xnow);
-    dynow = hfunc.dfdx(xnow);
-    output_result(xnow,ynow,dynow);
+  xp = new float[n];
+  yp = new float[n];
+  for(int i = 0; i < n; i++){
+    xp[i] = x[i];
+    yp[i] = y[i];
   }
-  std::cout << std::endl;
+  FSpline h_spline = FSpline(xp, yp, n, "Test spline 3");
 
-  // Clean up memory
-  delete gfunc;
+  // Set to show error message if x is out of bounds
+  h_spline.show_warning(true);
+
+  std::cout << "[Test 3 with x out of bounds and info about spline]" << std::endl;
+  h_spline(xmin - 0.5);
+  h_spline(xmax + 0.5);
+
+  // Output info about the spline
+  h_spline.info();
+
+  delete[] xp;
+  delete[] yp;
 }
 
-void output_result(double xnow, double ynow, double dynow){
-  std::cout << "  x = " << std::setw(12) << xnow;
-  std::cout << "  y = " << std::setw(12) << ynow;
-  std::cout << "  |y - x2|    = " << std::setw(12) << fabs(ynow - xnow*xnow);
-  std::cout << "  |dydx - 2x| = " << std::setw(12) << fabs(dynow-2.0*xnow);
+//================================================================
+// Dump to screen
+//================================================================
+void output(double xx, double yy, double dy){
+  std::cout.precision(3);
+  std::cout << " x = " << std::setw(8) << xx;
+  std::cout << " f(x) = " << std::setw(8) << yy;
+  std::cout << " Error f = " << std::setw(8) << fabs( yy / f(xx) - 1.0 );
+  std::cout << " Error df/dx = " << std::setw(8) << fabs( dy / dfdx(xx) - 1.0 );
   std::cout << std::endl; 
+  std::cout.precision(0);
 }
 
-int main(int argc, char **argv){
-  test_spline();
-}
